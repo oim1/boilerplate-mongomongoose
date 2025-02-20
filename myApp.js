@@ -5,15 +5,31 @@ const URL = process.env.MONGO_URI
 
 mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
+const Schema = mongoose.Schema;
 
-let Person;
+const personSchema = new Schema({
+  name: {type: String, required: true},
+  age: Number,
+  favoriteFoods: [String],
+});
+
+let Person = mongoose.model("Person", personSchema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  let adrianChai = new Person({ name: "Adrian Chai", age: 21, favoriteFoods: ["Egg fried reus"] });
+  adrianChai.save(function (err, data) {
+    if (err) {
+      return console.error(err)
+    }
+    done(null, data);
+  });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, function (err, data) {
+    if (err) { return console.log(err) };
+    done(null, data);
+  })
 };
 
 const findPeopleByName = (personName, done) => {
